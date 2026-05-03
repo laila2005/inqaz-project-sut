@@ -1,0 +1,27 @@
+# Environment
+.env
+.venv
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Datasets
+data/raw/
+data/processed/
+
+# Models and large files
+results/saved_models/
+*.h5
+*.pb
+*.tflite
+*.weights
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db
