@@ -66,10 +66,12 @@ else:
         if st.button("Analyze Situation"):
             with st.spinner("Analyzing image for severe crash indicators..."):
                 # Preprocess image
+                if image.mode != 'RGB':
+                    image = image.convert('RGB')
                 img = image.resize((224, 224))
-                img_array = np.array(img) / 255.0
-                if img_array.shape[-1] == 4: # Handle RGBA
-                    img_array = img_array[..., :3]
+                img_array = np.array(img)
+                # Apply MobileNetV2 preprocessing range [-1, 1]
+                img_array = (img_array / 127.5) - 1.0
                 img_array = np.expand_dims(img_array, axis=0)
                 
                 # Predict

@@ -41,7 +41,7 @@ def train_models():
     print("Loading data...")
     train_ds, val_ds, test_ds = get_data_generators(raw_dir)
     
-    epochs = 15
+    epochs = 6
     callbacks = [
         tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
     ]

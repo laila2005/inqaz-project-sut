@@ -50,8 +50,8 @@ def get_data_generators(data_dir, batch_size=32, img_size=(224, 224)):
         tf.keras.layers.RandomZoom(0.2),
     ])
 
-    # 3. Normalization Layer
-    normalization_layer = tf.keras.layers.Rescaling(1./255)
+    # 3. Normalization Layer (MobileNetV2 expects [-1, 1])
+    normalization_layer = tf.keras.layers.Rescaling(1./127.5, offset=-1.0)
 
     # Apply augmentation and normalization
     # Map functions for performance
