@@ -26,7 +26,7 @@ def build_transfer_learning_model(input_shape=(224, 224, 3)):
     model.add(base_model)
     
     # Add custom head explicitly in code
-    model.add(layers.Flatten())
+    model.add(layers.GlobalAveragePooling2D())
     
     model.add(layers.Dense(256))
     model.add(layers.BatchNormalization())
