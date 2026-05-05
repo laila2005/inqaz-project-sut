@@ -79,7 +79,7 @@ else:
                 
                 time.sleep(1) # Simulate processing time
                 
-                if prediction > 0.5:
+                if prediction < 0.5:
                     st.markdown("""
                     <div class="alert-box">
                         <h3>⚠️ CAR CRASH DETECTED</h3>
@@ -93,7 +93,7 @@ else:
                             <li>📸 Attaching photo evidence to dispatch center... <b>Sent!</b></li>
                         </ul>
                     </div>
-                    """.format(prediction * 100), unsafe_allow_html=True)
+                    """.format((1 - prediction) * 100), unsafe_allow_html=True)
                 else:
                     st.markdown("""
                     <div class="safe-box">
@@ -101,4 +101,4 @@ else:
                         <p>Confidence: <b>{:.2f}%</b></p>
                         <p>No severe crash detected. No emergency services were alerted.</p>
                     </div>
-                    """.format((1 - prediction) * 100), unsafe_allow_html=True)
+                    """.format(prediction * 100), unsafe_allow_html=True)
