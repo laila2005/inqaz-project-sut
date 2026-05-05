@@ -23,7 +23,7 @@ def evaluate_model(model_path, test_ds, model_name, results_dir):
     y_pred = (y_pred_probs > 0.5).astype(int)
     
     # 1. Classification Report (Accuracy, Precision, Recall, F1)
-    report = classification_report(y_true, y_pred, target_names=['Crash', 'Normal'])
+    report = classification_report(y_true, y_pred, target_names=['Normal', 'Crash'])
     print(report)
     
     with open(os.path.join(results_dir, f'{model_name}_report.txt'), 'w') as f:
@@ -32,7 +32,7 @@ def evaluate_model(model_path, test_ds, model_name, results_dir):
     # 2. Confusion Matrix Heatmap
     cm = confusion_matrix(y_true, y_pred)
     plt.figure(figsize=(6,5))
-    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Crash', 'Normal'], yticklabels=['Crash', 'Normal'])
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Normal', 'Crash'], yticklabels=['Normal', 'Crash'])
     plt.title(f'{model_name} Confusion Matrix')
     plt.ylabel('Actual')
     plt.xlabel('Predicted')
