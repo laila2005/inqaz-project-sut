@@ -1,8 +1,8 @@
               precision    recall  f1-score   support
 
-       Crash       0.78      0.33      0.46       227
-      Normal       0.57      0.91      0.70       225
+       Crash       0.65      0.59      0.62       227
+      Normal       0.62      0.68      0.65       225
 
-    accuracy                           0.62       452
-   macro avg       0.68      0.62      0.58       452
-weighted avg       0.68      0.62      0.58       452
+    accuracy                           0.63       452
+   macro avg       0.64      0.64      0.63       452
+weighted avg       0.64      0.63      0.63       452
