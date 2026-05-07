@@ -73,4 +73,4 @@ inqaz-project-sut/
 | Deployment (Bonus) | ✅ | Streamlit app with simulated emergency API (`app.py`) |
 
 ## Team
-**Inqaz Team** — Shorouk Academy, SUT
+**Inqaz Team** — SUT
