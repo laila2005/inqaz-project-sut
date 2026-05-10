@@ -7,7 +7,7 @@ Inqaz is an AI-powered emergency response application designed to automatically 
 ## 2. Dataset Description and Task Definition
 The objective of this project is Binary Image Classification: distinguishing between a `Crash` and a `Normal` traffic scene.
 
-- **Data Source:** We constructed a custom dataset of 3,000 real-world images sourced from Kaggle.
+- **Data Source:** We constructed a custom dataset of 3,000 real-world images sourced from the Kaggle [Car Crash Dataset](https://www.kaggle.com/datasets/vishnu606/car-crash-dataset) by Vishnu606, downloaded programmatically using the `kagglehub` library.
 - **Classes:** 
   - `Crash` (Class 0): Images of vehicle accidents, overturned cars, and collisions.
   - `Normal` (Class 1): Images of regular traffic, clear roads, and undamaged vehicles.
@@ -30,8 +30,8 @@ Robust preprocessing is essential for standardizing input and preventing overfit
 **Concept Explained:** A Convolutional Neural Network (CNN) is a type of deep learning algorithm specifically designed for image analysis. It works by sliding small "filters" (convolutions) over the image to detect fundamental patterns. Early layers detect simple features like edges and lines, while deeper layers combine these to recognize complex shapes like dented metal or shattered glass.
 
 A CNN was built entirely from scratch (`src/models/cnn_scratch.py`) to serve as a baseline.
-- **Architecture:** 4 Blocks of `Conv2D -> BatchNormalization -> ReLU -> MaxPooling2D`.
-- **Head:** A `Flatten` layer followed by a `Dense(128)` layer with Dropout, ending in a `Dense(1)` output layer with a Sigmoid activation.
+- **Architecture:** 4 Blocks of `Conv2D -> BatchNormalization -> ReLU -> MaxPooling2D` with increasing filter sizes (32 → 64 → 128 → 256).
+- **Head:** `Flatten -> Dense(512) -> BatchNorm -> ReLU -> Dropout(0.5) -> Dense(128) -> BatchNorm -> ReLU -> Dropout(0.3) -> Dense(1, Sigmoid)`.
 - **Trainable Parameters:** ~2.5 Million.
 
 ### 4.2 Transfer Learning (MobileNetV2)
@@ -39,7 +39,7 @@ A CNN was built entirely from scratch (`src/models/cnn_scratch.py`) to serve as 
 
 A highly optimized model using the MobileNetV2 backbone, built manually without direct drag-and-drop (`src/models/transfer_learning.py`).
 - **Base:** `MobileNetV2` loaded with `include_top=False` and `weights='imagenet'`.
-- **Custom Head:** We explicitly added `GlobalAveragePooling2D()` followed by `Dense(256)`, Dropout, `Dense(128)`, Dropout, and a `Dense(1)` Sigmoid output.
+- **Custom Head:** We explicitly added `GlobalAveragePooling2D() -> Dense(256) -> BatchNorm -> ReLU -> Dropout(0.5) -> Dense(128) -> BatchNorm -> ReLU -> Dropout(0.3) -> Dense(1, Sigmoid)`.
 - **Design Choice:** We replaced the traditional `Flatten()` with `GlobalAveragePooling2D()` to drastically reduce the parameter count (from ~16 million to ~1,280 in the immediate next layer), preventing severe overfitting on our small dataset.
 - **Training Strategy:** 2-Phase Fine-Tuning. Phase 1 trained only the custom head with the base frozen. Phase 2 unfroze the top 20 layers of the base for fine-tuning with a lower learning rate.
 

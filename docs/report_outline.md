@@ -8,9 +8,9 @@ Use this outline to write your PDF or Word report to get full marks on the Docum
 - **Task:** Binary Image Classification (Crash vs. Normal Traffic).
 
 ## 2. Dataset Description
-- **Source:** Kaggle (Car Crash Dataset). Mention the URL.
-- **Size:** State the exact number of images (ensure it's > 1000).
-- **Structure:** Raw images stored locally without pre-computation.
+- **Source:** Kaggle — [Car Crash Dataset by Vishnu606](https://www.kaggle.com/datasets/vishnu606/car-crash-dataset). Downloaded using the `kagglehub` library.
+- **Size:** 3,000 images (1,500 Crash + 1,500 Normal). Well over the 1,000 minimum requirement.
+- **Structure:** Raw `.jpg` images stored locally in `data/raw/crash/` and `data/raw/normal/` without pre-computation.
 
 ## 3. Preprocessing Steps
 *Explain what you did in `src/preprocess.py` and why:*
@@ -22,14 +22,14 @@ Use this outline to write your PDF or Word report to get full marks on the Docum
 ## 4. Model Architectures
 ### Model 1: Scratch CNN
 - Built layer by layer.
-- 4 Convolutional Blocks containing: `Conv2D -> BatchNorm -> ReLU -> MaxPooling2D`.
-- Explained use of `BatchNormalization` for stability and `Dropout` (0.5 and 0.3) to reduce overfitting.
+- 4 Convolutional Blocks containing: `Conv2D -> BatchNorm -> ReLU -> MaxPooling2D` with increasing filters (32 → 64 → 128 → 256).
+- Fully Connected Head: `Flatten -> Dense(512) -> BatchNorm -> ReLU -> Dropout(0.5) -> Dense(128) -> BatchNorm -> ReLU -> Dropout(0.3) -> Dense(1, Sigmoid)`.
 - Output layer: 1 Neuron with `Sigmoid` activation.
 
 ### Model 2: Transfer Learning (MobileNetV2)
 - Built manually without using one-line wrapper functions.
 - Used MobileNetV2 pretrained on ImageNet (excluding the top head).
-- Explicitly added custom head: `GlobalAveragePooling2D() -> Dense(256) -> Dropout(0.5) -> Dense(128) -> Dense(1, Sigmoid)`.
+- Explicitly added custom head: `GlobalAveragePooling2D() -> Dense(256) -> BatchNorm -> ReLU -> Dropout(0.5) -> Dense(128) -> BatchNorm -> ReLU -> Dropout(0.3) -> Dense(1, Sigmoid)`.
 - Discussed why `GlobalAveragePooling2D` was used instead of `Flatten` (drastically reduces parameters from ~16M to ~1.2K to prevent severe overfitting).
 - Discussed the Two-Phase training strategy: Frozen base layers first, followed by fine-tuning the top 20 layers.
 
@@ -43,11 +43,11 @@ Use this outline to write your PDF or Word report to get full marks on the Docum
 ## 6. Model Comparison Table
 | Metric | Scratch CNN | Transfer Learning |
 |--------|-------------|-------------------|
-| Train Accuracy | % | % |
-| Val Accuracy | % | % |
-| Test Accuracy | % | % |
-| Training Time | X mins | Y mins |
-| Trainable Params | N | M |
+| Test Accuracy | 63% | **68%** |
+| Crash Precision | 0.65 | **0.68** |
+| Crash Recall | 0.59 | **0.69** |
+| Crash F1-Score | 0.62 | **0.68** |
+| Trainable Params | ~2.5M | ~1,280 (head) |
 
 ## 7. Conclusion & Recommendations
 - Summarize which model performed better and why (Transfer Learning successfully utilized pre-learned visual features to achieve higher accuracy).

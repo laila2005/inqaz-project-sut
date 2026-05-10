@@ -10,8 +10,8 @@ Every team member must understand what each script does. Here is the exact pipel
 
 ### Data Preparation
 - **`src/setup_dataset.py`**: 
-  - **What it does:** Downloads the raw Car Crash dataset directly from Kaggle and organizes the images into two folders: `data/raw/crash` and `data/raw/normal`. 
-  - **Why it matters:** Proves we didn't use a built-in "toy" dataset like MNIST. We handled raw files manually.
+  - **What it does:** Downloads the raw [Car Crash Dataset by Vishnu606](https://www.kaggle.com/datasets/vishnu606/car-crash-dataset) from Kaggle using the `kagglehub` library, and organizes the images into two folders: `data/raw/crash` and `data/raw/normal`. 
+  - **Why it matters:** Proves we didn't use a built-in "toy" dataset like MNIST. We handled raw files manually using programmatic download.
 
 - **`src/preprocess.py`**:
   - **What it does:** Prepares the images before they go into the AI.
@@ -23,8 +23,8 @@ Every team member must understand what each script does. Here is the exact pipel
 
 ### The Brains (AI Models)
 - **`src/models/cnn_scratch.py`**:
-  - **What it does:** Contains the blueprint for our Custom Convolutional Neural Network built entirely from scratch.
-  - **Why it matters:** Shows we understand how to build neural networks layer-by-layer (Conv2D -> BatchNorm -> ReLU -> MaxPooling).
+  - **What it does:** Contains the blueprint for our Custom CNN. Uses 4 Conv blocks with increasing filters (32 → 64 → 128 → 256), followed by a `Flatten → Dense(512) → BatchNorm → Dropout(0.5) → Dense(128) → BatchNorm → Dropout(0.3) → Dense(1, Sigmoid)` head.
+  - **Why it matters:** Shows we understand how to build neural networks layer-by-layer (Conv2D -> BatchNorm -> ReLU -> MaxPooling -> Dense).
 
 - **`src/models/transfer_learning.py`**:
   - **What it does:** Loads a highly advanced, pre-trained Google model (`MobileNetV2`) but removes its top "classification" head. We then explicitly code our own custom head (`GlobalAveragePooling2D -> Dense(256) -> BatchNorm -> Dropout -> Dense(128) -> Dropout -> Output`).
