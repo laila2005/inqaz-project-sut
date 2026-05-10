@@ -13,11 +13,7 @@ data/raw/
 data/processed/
 
 # Models and large files
-results/saved_models/
-*.h5
-*.pb
-*.tflite
-*.weights
+# Allowed tracking of saved models for cloud deployment
 
 # Jupyter Notebooks
 .ipynb_checkpoints
