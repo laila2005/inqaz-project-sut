@@ -21,3 +21,4 @@ data/processed/
 # OS
 .DS_Store
 Thumbs.db
+results/saved_models/scratch_cnn.h5  

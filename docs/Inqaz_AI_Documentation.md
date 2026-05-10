@@ -12,81 +12,84 @@ Welcome to the documentation for the **Inqaz AI Rescue System**. This document i
 - **URL:** [https://www.kaggle.com/datasets/mdfahimbinamin/car-crash-or-collision-prediction](https://www.kaggle.com/datasets/mdfahimbinamin/car-crash-or-collision-prediction)
 
 ### What We Have Done
-1. **Data Engineering:** Extracted and cleaned a raw Kaggle dataset, programmatically mapping image IDs to their correct labels via an Excel database.
+1. **Data Engineering:** Extracted and cleaned a raw Kaggle dataset, programmatically mapping image IDs to their correct labels.
 2. **Data Balancing:** Created a perfectly balanced subset of exactly 3,000 images (1,500 crash, 1,500 normal) to prevent AI bias.
 3. **Model Engineering:** Designed and built two separate neural networks: a Custom CNN built layer-by-layer, and a MobileNetV2 transfer learning model.
-4. **Full-Stack Dashboard:** Developed a real-time web application using Streamlit that automatically triggers mock emergency API responses (Police, Ambulance, GPS) when a crash is detected.
+4. **Explainable AI (Grad-CAM):** Implemented visual heatmaps to show exactly what parts of an image the AI is looking at to make its decision.
+5. **Full-Stack Deployment:** Developed a premium dark-mode web application using Streamlit. Integrated a Live Camera feed and deployed the entire system to **Streamlit Community Cloud** for global accessibility.
 
 ### Current Accuracy Reached
-- **Transfer Learning Model (MobileNetV2):** ~70% overall accuracy (F1-score of 0.70) on entirely unseen test data.
-- **Custom CNN:** ~65% overall accuracy.
-*(Note: These are strong baselines given the relatively small training subset of 3,000 images. The models correctly identify the majority of severe crash scenarios).*
+- **Transfer Learning Model (MobileNetV2):** ~68% overall accuracy (F1-score of 0.68) on entirely unseen test data.
+- **Custom CNN:** ~63% overall accuracy.
 
 ---
 
 ## 2. What the App Does (Overview)
-The **Inqaz AI Rescue System** is an AI-powered emergency response application designed for Egypt. Its main goal is to automatically detect severe car crashes from images and instantly alert the necessary authorities to save lives.
+The **Inqaz AI Rescue System** is an AI-powered emergency response application. Its main goal is to automatically detect severe car crashes from images or live camera feeds and instantly alert the necessary authorities.
 
 ### The User Flow:
-1. **Image Upload:** A user (or a camera system) uploads a photo of a road or intersection to the dashboard.
-2. **AI Analysis:** The system analyzes the image in real-time to determine if a car crash has occurred.
+1. **Input:** A user uploads a photo OR uses the Live Camera integration.
+2. **AI Analysis:** The system analyzes the image in real-time. If a crash is detected, it generates a **Grad-CAM Heatmap** overlaid on the image to visually highlight the vehicle damage.
 3. **Automated Response:** 
    - If **Normal**, the system does nothing and confirms the situation is safe.
-   - If a **Crash is Detected**, the system automatically triggers a sequence of emergency actions:
-     - Extracts precise GPS coordinates.
-     - Sends an alert to the Ministry of Interior (Police - 122).
-     - Dispatches the nearest Ambulance (123).
-     - Attaches the photo evidence to the dispatch center.
+   - If a **Crash is Detected**, the system extracts precise GPS coordinates, alerts the Ministry of Interior (Police - 122), dispatches an Ambulance (123), and attaches the heatmap evidence.
 
 ---
 
-## 3. The Concept: How the AI Works
-At the heart of the system is **Computer Vision**, a branch of Artificial Intelligence that allows computers to "see" and understand images. 
+## 3. AI Concepts Glossary (Explained Simply)
 
-Specifically, this project uses a technique called **Binary Image Classification**. This means the AI is trained to sort images into exactly two categories:
-- `Class 0`: **Crash** (An accident has occurred).
-- `Class 1`: **Normal** (Standard traffic or empty road).
+This section explains the core concepts used in this project:
 
-### The Two Brains (Models)
-We built two different AI "brains" (Neural Networks) to solve this problem:
-1. **Custom CNN (Built from Scratch):** A Convolutional Neural Network built block-by-block. It learns basic shapes, edges, and textures from the ground up to identify crashed cars.
-2. **Transfer Learning (MobileNetV2):** A highly advanced model created by Google that has already seen millions of everyday images. We took this "smart" model and retrained its final layers specifically to recognize car crashes. This model generally performs better because it already knows how to process complex visuals.
+### Computer Vision & Binary Classification
+- **Computer Vision:** A field of AI that allows computers to "see" and interpret digital images.
+- **Binary Classification:** A task where the AI must choose between exactly two options. In our project, it sorts images into `Class 0` (Crash) or `Class 1` (Normal).
+
+### Convolutional Neural Network (CNN)
+A type of AI designed specifically for images. It works by sliding small "filters" over an image to detect patterns. 
+- Early layers detect simple things like straight lines, edges, and shadows.
+- Deeper layers combine those lines into complex shapes like "tires," "shattered glass," or "dented metal."
+
+### Transfer Learning
+Instead of teaching an AI from scratch (like teaching a baby), Transfer Learning takes an "adult" AI that has already studied millions of images (like Google's MobileNetV2) and slightly retrains its final brain cells to recognize a specific new task (like car crashes). This saves time and drastically improves accuracy.
+
+### Overfitting & Global Average Pooling
+- **Overfitting:** This happens when an AI just *memorizes* the training images instead of actually learning how to spot a crash. It scores 100% on the training test but fails on real-world photos.
+- **Global Average Pooling:** A technique we used to prevent overfitting. Instead of taking every single pixel of feature data (which creates millions of parameters and leads to memorization), it calculates the "average" of the features, summarizing the image into a tiny, generalized list of numbers.
+
+### Data Augmentation & Normalization
+- **Normalization:** Computers don't see colors; they see numbers from 0 to 255. Normalization shrinks these numbers down to a small range like `[-1.0, 1.0]`. This makes the math easier and faster for the AI.
+- **Data Augmentation:** To make the AI smarter, we slightly rotated, flipped, and zoomed the training images. This forces the AI to recognize a crash even if the camera is upside down, effectively creating thousands of "new" training examples from the original data.
+
+### Explainable AI (Grad-CAM)
+AI is often considered a "black box" because humans don't know *why* it makes a decision. **Grad-CAM (Gradient-weighted Class Activation Mapping)** fixes this. By tracing the mathematical gradients backward from the final decision, Grad-CAM draws a thermal heatmap over the original image showing exactly which pixels (e.g., a crushed bumper) most strongly convinced the AI that a crash occurred.
 
 ---
 
 ## 4. How the Data Processing Works
-Before the AI can look at a photo, the photo must be translated into numbers. Here is the exact pipeline of how processing works from start to finish:
 
 ### A. Training Preprocessing (Teaching the AI)
 When we are teaching the AI, we use the `src/preprocess.py` script:
-- **Resizing:** Every camera takes photos at different sizes. The code squashes every image into a perfect square: `224x224 pixels`.
-- **Normalization:** Computer screens use colors ranging from 0 to 255. The code divides these numbers by 255 so the AI only has to do math with small numbers between `0.0` and `1.0`.
-- **Data Augmentation:** To make the AI smarter, the code slightly rotates, flips, and zooms the training images. This forces the AI to recognize a crash even if the camera is upside down or far away.
+1. **Resizing:** Squashes every image into a perfect square: `224x224 pixels`.
+2. **Normalization:** Divides pixel values to force them into the `[-1.0, 1.0]` range required by MobileNetV2.
+3. **Data Augmentation:** Flips and rotates images randomly.
 
 ### B. Live App Processing (Inference)
-When you upload an image to the live Streamlit dashboard (`app.py`), the following happens:
-1. The image is loaded into memory using the `PIL` library.
-2. The image is resized to `224x224` to match exactly what the AI expects.
-3. The image colors are converted into an array of numbers and divided by 255 (`img_array / 255.0`).
-4. An extra "dimension" is added because the AI expects a *batch* of images, even if we are only giving it one.
-5. The processed numbers are fed into the AI model (`model.predict()`).
-6. The AI outputs a single decimal number between `0.0` and `1.0`.
-   - If the number is **less than 0.5**, it is closer to Class 0 (Crash).
-   - If the number is **greater than 0.5**, it is closer to Class 1 (Normal).
+When you upload an image to the live Streamlit dashboard (`app.py`):
+1. The image is resized to `224x224`.
+2. The image colors are converted into the `[-1.0, 1.0]` range.
+3. An extra "batch dimension" is added.
+4. The AI model predicts a single decimal number between `0.0` and `1.0`.
+   - **Less than 0.5** = Class 0 (Crash).
+   - **Greater than 0.5** = Class 1 (Normal).
+5. If it's a crash, the Grad-CAM algorithm calculates the heatmap and overlays it in the dashboard.
 
 ---
 
 ## 5. Code Structure Explained
-If you are looking at the project files, here is what each script does:
 
-* `app.py`: The main user interface. It uses the `Streamlit` library to create the web page, handle image uploads, process the image, and display the alerts.
-* `src/train.py`: The script that was run once to teach the AI. It loops through all 3,000 dataset images and saves the final "smart" models into the `results/saved_models/` folder.
-* `src/evaluate.py`: The testing script. It gives the AI a pop quiz on images it has never seen before, and generates the charts (Confusion Matrix, ROC Curve) to prove to your university how accurate it is.
-* `src/preprocess.py`: The factory line. It prepares, cleans, and augments the images before they go into the neural networks.
-* `src/models/cnn_scratch.py`: Contains the raw blueprint for the custom-built neural network.
-* `src/models/transfer_learning.py`: Contains the blueprint for importing Google's MobileNetV2 and attaching our custom classification head to it.
-
----
-
-### Summary
-The system successfully bridges complex deep learning concepts with a practical, user-friendly interface. By utilizing strict image preprocessing and powerful convolutional neural networks, the app is able to ingest visual data and make life-saving automated decisions within seconds.
+* `app.py`: The Streamlit web application. Handles the UI, Live Camera, model inference, and Grad-CAM visualization.
+* `src/train.py`: Trains the AI by looping through the 3,000 dataset images and saves the models to `results/saved_models/`.
+* `src/evaluate.py`: Tests the AI on unseen images and generates the Confusion Matrix and ROC Curves.
+* `src/preprocess.py`: Prepares, cleans, and augments the images before they go into the neural networks.
+* `src/models/cnn_scratch.py`: The blueprint for the custom-built neural network.
+* `src/models/transfer_learning.py`: The blueprint for importing MobileNetV2 and attaching our custom classification head.

@@ -27,12 +27,16 @@ Robust preprocessing is essential for standardizing input and preventing overfit
 ## 4. Model Architectures
 
 ### 4.1 Custom Scratch CNN
-A Convolutional Neural Network was built entirely from scratch (`src/models/cnn_scratch.py`) to serve as a baseline.
+**Concept Explained:** A Convolutional Neural Network (CNN) is a type of deep learning algorithm specifically designed for image analysis. It works by sliding small "filters" (convolutions) over the image to detect fundamental patterns. Early layers detect simple features like edges and lines, while deeper layers combine these to recognize complex shapes like dented metal or shattered glass.
+
+A CNN was built entirely from scratch (`src/models/cnn_scratch.py`) to serve as a baseline.
 - **Architecture:** 4 Blocks of `Conv2D -> BatchNormalization -> ReLU -> MaxPooling2D`.
 - **Head:** A `Flatten` layer followed by a `Dense(128)` layer with Dropout, ending in a `Dense(1)` output layer with a Sigmoid activation.
 - **Trainable Parameters:** ~2.5 Million.
 
 ### 4.2 Transfer Learning (MobileNetV2)
+**Concept Explained:** Transfer Learning is a technique where an AI model that has already been trained on millions of images (like Google's MobileNetV2) is reused for a new task. Instead of learning basic visual concepts from scratch, the model leverages its pre-existing "knowledge" of shapes and textures. We freeze its foundational layers and only re-train its final output layer to specifically identify car crashes.
+
 A highly optimized model using the MobileNetV2 backbone, built manually without direct drag-and-drop (`src/models/transfer_learning.py`).
 - **Base:** `MobileNetV2` loaded with `include_top=False` and `weights='imagenet'`.
 - **Custom Head:** We explicitly added `GlobalAveragePooling2D()` followed by `Dense(256)`, Dropout, `Dense(128)`, Dropout, and a `Dense(1)` Sigmoid output.
@@ -57,10 +61,12 @@ The **Transfer Learning** model outperformed the Scratch CNN across all metrics.
 *(Note: Comprehensive Confusion Matrices, Loss/Accuracy Curves, and ROC/AUC Curves are generated and saved in the `/results/` directory as required by the grading rubric).*
 
 ## 6. Deployment & Advanced Features (Bonus Phase)
-The winning Transfer Learning model was deployed into a fully functional Web Application using **Streamlit** (`app.py`). To demonstrate production-readiness, several advanced bonus features were implemented:
+The winning Transfer Learning model was deployed into a fully functional Web Application using **Streamlit** (`app.py`). To demonstrate production-readiness, the system is fully hosted on **Streamlit Community Cloud**, allowing it to be accessed securely from anywhere in the world. Several advanced bonus features were implemented:
 
 - **Premium UI & Live Data Ingestion:** The application features a sleek, responsive dark-mode interface. Users can either upload standard images or use the **Live Camera Integration** to capture real-time scenes, simulating a field operative or dashcam perspective. 
-- **Explainable AI (Grad-CAM):** To provide transparency into the AI's decision-making, we implemented Gradient-weighted Class Activation Mapping (Grad-CAM). When a crash is detected, the dashboard automatically generates a heatmap over the image, visually highlighting the specific damaged areas of the vehicle that triggered the positive prediction.
+- **Explainable AI (Grad-CAM):** To provide transparency into the AI's decision-making, we implemented Gradient-weighted Class Activation Mapping (Grad-CAM). 
+  - **Concept Explained:** AI models are often considered "black boxes" because humans don't know *why* the model made a certain decision. Grad-CAM traces the mathematical gradients backward from the final prediction to draw a thermal heatmap over the original image.
+  - **Application:** When a crash is detected, the dashboard automatically generates this heatmap, visually highlighting the specific damaged areas of the vehicle that triggered the positive prediction.
 
 ## 7. Conclusion
 This project successfully demonstrates a full lifecycle implementation of a Deep Learning Computer Vision solution. By carefully validating the raw data, enforcing strict preprocessing, and utilizing a sophisticated Transfer Learning pipeline with `GlobalAveragePooling2D`, we built a functional, deployable emergency response system.

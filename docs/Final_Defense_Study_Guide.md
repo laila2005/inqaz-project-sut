@@ -103,3 +103,12 @@ If the professor asks *"How does your CNN actually work?"*, explain it like an a
 
 ### Q12: How do you interpret the model's confidence score in the dashboard?
 **Answer:** The model outputs a single floating-point number between `0.0` and `1.0` via the Sigmoid activation. Due to the dataset folder ordering, values closer to `1.0` indicate higher confidence that the image is a **Crash** (Class 1), and values closer to `0.0` indicate higher confidence that it is **Normal** (Class 0). We display the confidence as a percentage. For example, if the model outputs `0.87`, we display "Crash Detected — Confidence: 87.00%." If it outputs `0.15`, we display "Normal Situation — Confidence: 85.00%" (calculated as `1 - 0.15 = 0.85`). The 0.5 threshold is the standard decision boundary for binary classification with Sigmoid.
+
+### Q13: What is Grad-CAM and how does it explain the AI's decision?
+**Answer:** Grad-CAM stands for Gradient-weighted Class Activation Mapping. Neural networks are often criticized as "black boxes" because humans cannot see how they make decisions. Grad-CAM solves this by looking at the final convolutional layer of our model right before the prediction is made. It calculates the gradients (the mathematical "importance") of the features and overlays a heat map on the original image. The "hot" spots (red/yellow) show exactly which pixels—such as a crushed bumper or shattered window—strongly convinced the AI that a crash had occurred.
+
+### Q14: How is your application deployed?
+**Answer:** Instead of just running locally on our computers, we deployed the final system as a cloud-native web application using Streamlit Community Cloud. This means the application runs on a remote Linux server and is accessible globally via a public URL. This demonstrates the transition from a raw Jupyter Notebook experiment to a production-ready software product.
+
+### Q15: How does the Live Camera feature integrate with your AI model?
+**Answer:** Using Streamlit's `st.camera_input`, the application can capture live image frames directly from the user's webcam or field camera. Once a picture is snapped, it is passed through the exact same preprocessing pipeline (resized to 224x224 and normalized to `[-1.0, 1.0]`) as the training images. It is then fed into the MobileNetV2 model in real-time, simulating how a police dashcam or traffic camera would automatically detect a crash in the field without requiring manual file uploads.

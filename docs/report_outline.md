@@ -15,7 +15,7 @@ Use this outline to write your PDF or Word report to get full marks on the Docum
 ## 3. Preprocessing Steps
 *Explain what you did in `src/preprocess.py` and why:*
 - **Resize:** Resized all images to a uniform 224x224 pixels to fit the model input layer.
-- **Normalization:** Scaled pixel values by `1/255` to convert them from [0, 255] to [0, 1] for faster convergence.
+- **Normalization:** Scaled pixel values using the formula `(pixel / 127.5) - 1.0` to convert them from [0, 255] to [-1.0, 1.0]. This specific range is mandatory for MobileNetV2 compatibility.
 - **Data Augmentation:** Applied random horizontal flips, rotation (20%), and zoom (20%) to artificially expand the dataset and prevent the model from overfitting to specific orientations.
 - **Data Split:** 70% Training, 15% Validation, 15% Testing using a random seed to prevent data leakage.
 
@@ -29,7 +29,8 @@ Use this outline to write your PDF or Word report to get full marks on the Docum
 ### Model 2: Transfer Learning (MobileNetV2)
 - Built manually without using one-line wrapper functions.
 - Used MobileNetV2 pretrained on ImageNet (excluding the top head).
-- Explicitly added custom head: `Flatten() -> Dense(256) -> Dropout(0.5) -> Dense(1, Sigmoid)`.
+- Explicitly added custom head: `GlobalAveragePooling2D() -> Dense(256) -> Dropout(0.5) -> Dense(128) -> Dense(1, Sigmoid)`.
+- Discussed why `GlobalAveragePooling2D` was used instead of `Flatten` (drastically reduces parameters from ~16M to ~1.2K to prevent severe overfitting).
 - Discussed the Two-Phase training strategy: Frozen base layers first, followed by fine-tuning the top 20 layers.
 
 ## 5. Evaluation Results
@@ -49,5 +50,10 @@ Use this outline to write your PDF or Word report to get full marks on the Docum
 | Trainable Params | N | M |
 
 ## 7. Conclusion & Recommendations
-- Summarize which model performed better and why (usually Transfer Learning due to pre-learned features).
-- Mention the successful Bonus Deployment using Streamlit, demonstrating real-world viability for the "Inqaz" application.
+- Summarize which model performed better and why (Transfer Learning successfully utilized pre-learned visual features to achieve higher accuracy).
+- Discuss the successful deployment of the "Inqaz" application on **Streamlit Community Cloud** with a premium UI.
+- Explain the bonus features:
+  - **Live Camera Integration:** Real-time data ingestion mimicking field dashcams.
+  - **Explainable AI (Grad-CAM):** Tracing mathematical gradients to generate visual heatmaps that highlight vehicle damage, providing transparency into the AI's decision.
+  
+*Note: Make sure to copy-paste the "AI Concepts Glossary" from the `Inqaz_AI_Documentation.md` file into your final PDF so you meet the requirement to "explain every concept used."*
