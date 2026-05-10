@@ -208,9 +208,9 @@ st.markdown("<div class='sub-title'>Advanced Vehicle Damage Assessment & Triage 
 @st.cache_resource
 def load_model():
     try:
-        return tf.keras.models.load_model('results/saved_models/transfer_learning.h5')
-    except:
-        return None
+        return tf.keras.models.load_model('results/saved_models/transfer_learning.h5', compile=False)
+    except Exception as e:
+        return str(e)
 
 def make_gradcam_heatmap(img_array, full_model, last_conv_layer_name="out_relu"):
     base_model = full_model.layers[0]
@@ -261,7 +261,10 @@ def display_gradcam(img, heatmap, alpha=0.5):
 # -----------------------------------------------------------------------------
 model = load_model()
 
-if model is None:
+if isinstance(model, str):
+    st.error(f"SYSTEM FAILURE: Neural Network load error. Details: {model}")
+    st.stop()
+elif model is None:
     st.error("SYSTEM FAILURE: Neural Network weights not found in `results/saved_models/transfer_learning.h5`.")
     st.stop()
 
