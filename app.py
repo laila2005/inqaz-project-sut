@@ -207,6 +207,12 @@ st.markdown("<div class='sub-title'>Advanced Vehicle Damage Assessment & Triage 
 # -----------------------------------------------------------------------------
 @st.cache_resource
 def load_model():
+    # Try .keras format first (zip-based, not affected by Git CRLF corruption)
+    try:
+        return tf.keras.models.load_model('results/saved_models/transfer_learning_model.keras', compile=False)
+    except Exception:
+        pass
+    # Fallback to .h5
     try:
         return tf.keras.models.load_model('results/saved_models/transfer_learning.h5', compile=False)
     except Exception as e:
