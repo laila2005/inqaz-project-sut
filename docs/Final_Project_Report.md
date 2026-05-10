@@ -50,10 +50,14 @@ Both models were evaluated on the 15% unseen Test Set (452 images).
 ### 5.1 Metrics Comparison
 | Metric | Scratch CNN | Transfer Learning (MobileNetV2) |
 |---|---|---|
+| **Training Accuracy** | ~65% | ~69% |
+| **Validation Accuracy** | ~65% | **~71%** |
 | **Test Accuracy** | 63% | **68%** |
 | **Crash Precision** | 0.65 | **0.68** |
 | **Crash Recall** | 0.59 | **0.69** |
 | **Crash F1-Score**| 0.62 | **0.68** |
+| **Epochs Trained** | 12 (Early Stopping) | 10 + 5 (Phase 1 + Fine-tuning) |
+| **Trainable Parameters** | ~2.5 Million | ~1,280 (custom head) |
 
 ### 5.2 Analysis
 The **Transfer Learning** model outperformed the Scratch CNN across all metrics. The Scratch CNN struggled with the complexity of real-world dashcam images, achieving only a 63% accuracy. The Transfer Learning model, leveraging ImageNet weights, achieved 68% accuracy and provided a much more balanced prediction capability, successfully identifying 69% of all real crashes in the test set.

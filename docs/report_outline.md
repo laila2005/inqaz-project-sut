@@ -43,17 +43,17 @@ Use this outline to write your PDF or Word report to get full marks on the Docum
 ## 6. Model Comparison Table
 | Metric | Scratch CNN | Transfer Learning |
 |--------|-------------|-------------------|
+| Training Accuracy | ~65% | ~69% |
+| Validation Accuracy | ~65% | **~71%** |
 | Test Accuracy | 63% | **68%** |
 | Crash Precision | 0.65 | **0.68** |
 | Crash Recall | 0.59 | **0.69** |
 | Crash F1-Score | 0.62 | **0.68** |
-| Trainable Params | ~2.5M | ~1,280 (head) |
+| Epochs Trained | 12 (Early Stop) | 10+5 (Phase 1 + Fine-tune) |
+| Trainable Params | ~2.5M | ~1,280 (custom head) |
 
 ## 7. Conclusion & Recommendations
-- Summarize which model performed better and why (Transfer Learning successfully utilized pre-learned visual features to achieve higher accuracy).
-- Discuss the successful deployment of the "Inqaz" application on **Streamlit Community Cloud** with a premium UI.
-- Explain the bonus features:
-  - **Live Camera Integration:** Real-time data ingestion mimicking field dashcams.
-  - **Explainable AI (Grad-CAM):** Tracing mathematical gradients to generate visual heatmaps that highlight vehicle damage, providing transparency into the AI's decision.
+
+This project demonstrates a complete Deep Learning pipeline for car crash detection — from raw data collection to cloud deployment. The Transfer Learning model (MobileNetV2, 68% accuracy) outperformed the Scratch CNN (63%) by leveraging pre-learned ImageNet features, with `GlobalAveragePooling2D` reducing parameters from ~16M to ~1,280 to prevent overfitting. The system was deployed on **Streamlit Community Cloud** with a premium dark-mode UI, **Live Camera integration** for real-time field use, and **Grad-CAM heatmaps** for explainable AI transparency. Future work includes expanding the dataset, adding video-based temporal analysis, and integrating real emergency dispatch APIs.
   
 *Note: Make sure to copy-paste the "AI Concepts Glossary" from the `Inqaz_AI_Documentation.md` file into your final PDF so you meet the requirement to "explain every concept used."*
