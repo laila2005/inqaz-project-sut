@@ -56,10 +56,11 @@ The **Transfer Learning** model outperformed the Scratch CNN across all metrics.
 
 *(Note: Comprehensive Confusion Matrices, Loss/Accuracy Curves, and ROC/AUC Curves are generated and saved in the `/results/` directory as required by the grading rubric).*
 
-## 6. Deployment (Bonus Phase)
-The winning Transfer Learning model was deployed into a fully functional Web Application using **Streamlit** (`app.py`). 
-- **Features:** Users can upload images from their device, which the app mathematically normalizes to `[-1.0, 1.0]` (matching the training pipeline) before feeding into the model.
-- **Logic:** If `prediction < 0.5`, the app declares a CRASH, calculates the confidence percentage, and visually simulates the dispatch of GPS coordinates to emergency services.
+## 6. Deployment & Advanced Features (Bonus Phase)
+The winning Transfer Learning model was deployed into a fully functional Web Application using **Streamlit** (`app.py`). To demonstrate production-readiness, several advanced bonus features were implemented:
+
+- **Premium UI & Live Data Ingestion:** The application features a sleek, responsive dark-mode interface. Users can either upload standard images or use the **Live Camera Integration** to capture real-time scenes, simulating a field operative or dashcam perspective. 
+- **Explainable AI (Grad-CAM):** To provide transparency into the AI's decision-making, we implemented Gradient-weighted Class Activation Mapping (Grad-CAM). When a crash is detected, the dashboard automatically generates a heatmap over the image, visually highlighting the specific damaged areas of the vehicle that triggered the positive prediction.
 
 ## 7. Conclusion
 This project successfully demonstrates a full lifecycle implementation of a Deep Learning Computer Vision solution. By carefully validating the raw data, enforcing strict preprocessing, and utilizing a sophisticated Transfer Learning pipeline with `GlobalAveragePooling2D`, we built a functional, deployable emergency response system.
