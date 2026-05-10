@@ -27,8 +27,8 @@ st.markdown("""
         background: radial-gradient(circle at 50% -20%, #1a0b14 0%, #050505 80%) !important;
     }
 
-    /* Hide standard Streamlit header and footer */
-    header[data-testid="stHeader"], footer, #MainMenu {visibility: hidden;}
+    /* Hide standard Streamlit footer and main menu, but keep header for sidebar toggle */
+    footer, #MainMenu {visibility: hidden;}
 
     /* Premium Header Typography */
     .main-title {
